@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주석판 인터뷰 — 노트앱 헤비 유저 (가상 샘플)</title>
+<style>
+:root{
+    --bg:#ffffff;
+    --ink:#16181d;
+    --ink-soft:#33373f;
+    --gray:#6b7280;
+    --gray-lt:#9aa0a8;
+    --rule:#e3e5e8;
+    --rule-hard:#c9ccd1;
+    --accent:#1d4ed8;
+    --accent-soft:#eef2ff;
+    --alt:#b45309;
+    --wash:#f6f7f9;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px; line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:99;transition:width .08s linear}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+
+  /* ---------- masthead ---------- */
+  .mast{padding:72px 0 0}
+  .kicker{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:20px}
+  .mast h1{font-size:36px;line-height:1.35;font-weight:700;letter-spacing:-0.02em;margin:0 0 16px;max-width:22em}
+  .mast .sub{font-size:16.5px;color:var(--ink-soft);max-width:38em;margin:0 0 30px;line-height:1.72}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 30px;font-size:13.5px;color:var(--ink-soft);
+        border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:16px 0;max-width:940px}
+  .meta b{font-weight:600;color:var(--gray);margin-right:6px}
+
+  .lede{font-size:18px;line-height:1.8;color:var(--ink);max-width:36em;margin:40px 0 0}
+
+  /* timeline */
+  .tl{margin:56px 0 0;max-width:940px;background:var(--wash);padding:26px 28px;border:1px solid var(--rule)}
+  .tl-h{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);font-weight:600;margin-bottom:24px}
+  .tl-track{display:flex;position:relative;padding-top:20px}
+  .tl-track::before{content:"";position:absolute;top:5px;left:5px;right:5px;height:1px;background:var(--rule-hard)}
+  .tl-node{flex:1;position:relative;padding-right:20px}
+  .tl-node::before{content:"";position:absolute;top:-20px;left:0;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--rule-hard)}
+  .tl-node.hot::before{background:var(--accent);border-color:var(--accent)}
+  .tl-when{font-family:var(--mono);font-size:11.5px;color:var(--gray);font-weight:600}
+  .tl-what{font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin-top:6px}
+  .tl-node.hot .tl-what{color:var(--ink)}
+
+  /* ---------- page grid ---------- */
+  .page{display:grid;grid-template-columns:190px minmax(0,1fr);gap:60px;margin-top:80px;padding-bottom:120px}
+
+  /* nav */
+  nav{position:sticky;top:36px;align-self:start;font-size:13.5px;line-height:1.5}
+  nav .nav-h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);font-weight:600;
+             padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--rule)}
+  nav a{display:flex;gap:10px;color:var(--ink-soft);text-decoration:none;padding:6px 0;
+        border-left:2px solid transparent;padding-left:10px;margin-left:-12px}
+  nav a .n{font-family:var(--mono);font-size:11.5px;color:var(--gray-lt);padding-top:2px;min-width:16px}
+  nav a:hover{color:var(--ink)}
+  nav a.on{color:var(--accent);font-weight:600;border-left-color:var(--accent)}
+  nav a.on .n{color:var(--accent)}
+  .navtool{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--ink-soft)}
+  .navtool label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;line-height:1.45}
+  .navtool input{margin:3px 0 0}
+
+  /* ---------- chapters ---------- */
+  .ch{margin-bottom:96px;scroll-margin-top:50px}
+  .ch-head{max-width:660px;margin-bottom:34px}
+  .ch-num{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600;display:block;margin-bottom:10px}
+  .ch h2{font-size:24px;line-height:1.4;font-weight:700;letter-spacing:-0.015em;margin:0 0 12px}
+  .ch-lede{font-size:15px;line-height:1.7;color:var(--gray);max-width:34em;margin:0}
+  .ch-flow{font-size:13px;line-height:1.6;color:var(--gray);margin-top:14px;max-width:34em;
+           padding-left:12px;border-left:2px solid var(--rule-hard)}
+  .ch-flow span{display:inline-block;color:var(--accent);font-weight:600;margin-right:8px}
+  .ch-flow span::before{content:"흐름 · "}
+  .ch-rule{height:1px;background:var(--rule);margin-bottom:34px}
+
+  /* 녹취 마커 */
+  .marker{display:flex;align-items:center;gap:14px;margin:0 0 26px;max-width:640px}
+  .marker span{font-size:11.5px;font-weight:600;letter-spacing:.08em;color:var(--gray);white-space:nowrap}
+  .marker::before,.marker::after{content:"";height:1px;background:var(--rule-hard);flex:1}
+  .marker.solo::before{display:none}
+
+  /* turns */
+  .turn{display:grid;grid-template-columns:minmax(0,640px) 280px;gap:44px;margin-bottom:22px;align-items:start}
+  .say{display:grid;grid-template-columns:58px minmax(0,1fr);gap:16px}
+  .who{font-size:11.5px;font-weight:600;line-height:1.5;padding:3px 0 0;user-select:none;text-align:right}
+  .who.tone-primary{color:var(--accent)}
+  .who.tone-muted{color:var(--gray)}
+  .who.tone-alt{color:var(--alt)}
+  .say>div:last-child{border-left:2px solid var(--rule);padding-left:16px}
+  .say.tone-primary>div:last-child{border-left-color:var(--accent)}
+  .say.tone-alt>div:last-child{border-left-color:var(--alt)}
+  .say p{margin:0 0 12px;font-size:16px;line-height:1.78;color:var(--ink-soft)}
+  .say.tone-primary p{color:var(--ink)}
+  .say p:last-child{margin-bottom:0}
+  .say b{font-weight:600;color:var(--ink);background:linear-gradient(transparent 62%,rgba(107,114,128,.20) 62%)}
+  .say.tone-primary b{background:linear-gradient(transparent 62%,rgba(29,78,216,.14) 62%)}
+  .say.tone-alt b{background:linear-gradient(transparent 62%,rgba(180,83,9,.16) 62%)}
+
+  /* backchannel */
+  .turn.bc .say p{font-size:14.5px;color:var(--gray);line-height:1.65}
+  .turn.bc .say>div:last-child{border-left-style:dotted}
+  body.hide-bc .turn.bc{display:none}
+
+  /* margin note */
+  .note{font-size:13.5px;line-height:1.7;color:var(--ink-soft);background:var(--wash);
+        border:1px solid var(--rule);padding:14px 16px}
+  .note::before{content:"주석";display:block;font-size:10.5px;letter-spacing:.1em;font-weight:600;
+                color:var(--gray);margin-bottom:8px}
+  .note em{font-style:normal;color:var(--ink);font-weight:600}
+
+  /* ---------- analysis ---------- */
+  .an{margin:44px 0 0;padding:30px 32px;background:var(--accent-soft);
+      border:1px solid #d5ddf8;border-left:4px solid var(--accent);max-width:964px}
+  .an-tag{font-size:11px;letter-spacing:.1em;color:var(--accent);font-weight:700;
+          text-transform:uppercase;margin-bottom:12px}
+  .an h3{font-size:20px;line-height:1.45;font-weight:700;margin:0 0 18px;letter-spacing:-0.012em;max-width:26em}
+  .an p{font-size:16px;line-height:1.82;color:var(--ink);margin:0 0 18px;max-width:42em}
+  .an p:last-child{margin-bottom:0}
+  .an strong,.an b{font-weight:700}
+  .an .q{color:var(--ink-soft)}
+  .an ol,.an ul{font-size:16px;line-height:1.82;max-width:42em;padding-left:1.3em;margin:0 0 18px}
+  .an li{margin-bottom:10px}
+  .an .verdict{font-size:15.5px;line-height:1.7;color:var(--ink);background:#fff;
+               border:1px solid #d5ddf8;padding:16px 20px;margin-top:22px;max-width:42em}
+  .an .verdict b{font-weight:700;color:var(--accent)}
+
+  /* ---------- closing ---------- */
+  .close{border-top:2px solid var(--ink);padding-top:40px;margin-top:30px}
+  .close .an{margin-top:8px}
+  .close h2{font-size:26px;font-weight:700;margin:0 0 22px;letter-spacing:-0.018em}
+
+  table{border-collapse:collapse;width:100%;max-width:964px;margin:34px 0 0;font-size:14.5px}
+  th,td{text-align:left;padding:14px 18px 14px 0;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.62}
+  th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);font-weight:600;
+     border-bottom:1px solid var(--rule-hard);padding-bottom:10px}
+  td.r{font-family:var(--mono);font-size:12.5px;color:var(--gray);width:34px;padding-top:16px;font-weight:600}
+  td.w{width:30%;color:var(--ink-soft)}
+  td b{font-weight:600;color:var(--ink)}
+  .dim{color:var(--gray)}
+
+  .todo{max-width:964px;margin-top:50px;border-top:1px solid var(--rule);padding-top:26px}
+  .todo h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);font-weight:600;margin:0 0 16px}
+  .todo li{margin-bottom:10px;font-size:15px;color:var(--ink-soft);line-height:1.7}
+  .todo ul{padding-left:1.15em;margin:0}
+
+  footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--rule);
+         font-size:13px;color:var(--gray);max-width:964px;line-height:1.7}
+  footer b{color:var(--ink-soft);font-weight:600}
+
+  @media (max-width:1180px){
+    .page{grid-template-columns:1fr;gap:0}
+    nav{display:none}
+    .turn{grid-template-columns:minmax(0,1fr);gap:0}
+    .note{margin:14px 0 0 74px;max-width:36em}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px}
+    .mast{padding-top:44px}
+    .mast h1{font-size:27px}
+    .lede{font-size:16.5px}
+    .tl{padding:20px}
+    .tl-track{display:block}
+    .tl-track::before{display:none}
+    .tl-node{padding:0 0 18px 18px;border-left:1px solid var(--rule-hard)}
+    .tl-node::before{top:2px;left:-6px}
+    .say{grid-template-columns:1fr;gap:6px}
+    .who{text-align:left}
+    .say>div:last-child{padding-left:12px}
+    .note{margin-left:12px}
+    .an{padding:22px 18px}
+    .ch h2{font-size:21px}
+    td.w{width:auto}
+  }
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="kicker">User Interview · Annotated</div>
+
+  <h1>"검색이 되니까 정리를 안 하게 됐다"</h1>
+
+  <p class="sub">렌더러 회귀 테스트용 가상 인터뷰. 실존 인물·제품·조직과 무관하며, 모든 발화와 수치는 픽스처를 위해 지어낸 것이다.</p>
+
+  <div class="meta">
+    <span><b>일시</b> 2026.01.15</span>
+    <span><b>대상</b> 프리랜스 번역가 (가상)</span>
+    <span><b>시장</b> 샘플 / 해당 없음</span>
+    <span><b>사용 기능</b> 전문 검색, 태그, 백링크</span>
+    <span><b>구독</b> 연간 · 2년차</span>
+  </div>
+
+  <p class="lede">이 픽스처의 목적은 내용이 아니라 구조다. 챕터별 lede·flow·marker, 발화 turn의 note와 backchannel, 챕터 말미 analysis, 마지막 종합 표와 후속 질문까지 렌더러가 다루는 모든 블록이 최소 한 번씩 등장하도록 구성했다.</p>
+
+  <div class="tl">
+    <div class="tl-h">사용 이력</div>
+    <div class="tl-track">
+      <div class="tl-node">
+        <div class="tl-when">2024.03</div>
+        <div class="tl-what">무료 플랜으로 시작. 회의록 저장 용도</div>
+      </div>
+      <div class="tl-node hot">
+        <div class="tl-when">2024.09</div>
+        <div class="tl-what">노트 1,000개 돌파. 폴더 구조가 무너짐</div>
+      </div>
+      <div class="tl-node">
+        <div class="tl-when">2025.01</div>
+        <div class="tl-what">연간 플랜 전환. 전문 검색 때문</div>
+      </div>
+      <div class="tl-node hot">
+        <div class="tl-when">2025.11</div>
+        <div class="tl-what">폴더를 전부 버리고 태그만 사용</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+<nav>
+  <div class="nav-h">Contents</div>
+  <a href="#c1"><span class="n">01</span><span>정리 포기</span></a>
+  <a href="#c2"><span class="n">02</span><span>검색</span></a>
+  <a href="#c3"><span class="n">03</span><span>가격</span></a>
+  <a href="#closing"><span class="n">—</span><span>종합</span></a>
+  <div class="navtool">
+    <label><input type="checkbox" id="bcToggle"><span>맞장구·간투사 숨기기</span></label>
+  </div>
+</nav>
+
+<main>
+<section class="ch" id="c1">
+  <div class="ch-head">
+    <span class="ch-num">01</span>
+    <h2>오프닝 — 정리를 포기한 시점</h2>
+    <p class="ch-lede">첫 발화부터 결론이 나왔다. 폴더를 버린 것이 실패가 아니라 적응이었다는 주장이다.</p>
+    <div class="ch-flow"><span>사용자가 먼저 말을 꺼냄</span>배경 질문 전에 총평이 나왔고, 인터뷰어는 뒤에서 배경을 되물었다.</div>
+  </div>
+  <div class="ch-rule"></div>
+
+  <div class="marker solo"><span>결론 선행</span></div>
+
+  <div class="turn">
+    <div class="say tone-primary"><div class="who tone-primary">사용자</div><div>
+      <p>솔직히 말하면 저는 이제 정리를 안 해요. 검색이 되니까요.</p>
+      <p>예전엔 폴더를 열심히 팠는데, 어느 순간부터 그 폴더를 다시 안 열더라고요.</p>
+    </div></div>
+    <div class="note">"정리를 안 한다"는 기능 불만이 아니라 사용 패턴의 전환이다. 이 문장이 인터뷰 전체의 축이 된다.</div>
+  </div>
+
+  <div class="turn bc">
+    <div class="say tone-muted"><div class="who tone-muted">인터뷰어</div><div>
+      <p>언제부터 그렇게 되셨어요?</p>
+    </div></div>
+  </div>
+
+  <div class="turn">
+    <div class="say tone-primary"><div class="who tone-primary">사용자</div><div>
+      <p>노트가 한 천 개쯤 됐을 때요. 그때부터 폴더가 의미가 없어졌어요.</p>
+      <p>찾을 때 폴더를 뒤지는 게 아니라 그냥 단어를 치니까.</p>
+    </div></div>
+    <div class="note">임계점이 개수로 표현됐다. 실제 원인은 개수 자체보다 분류 규칙이 시간이 지나며 어긋난 것일 가능성이 높다.</div>
+  </div>
+
+</section>
+
+<section class="ch" id="c2">
+  <div class="ch-head">
+    <span class="ch-num">02</span>
+    <h2>검색 — 되는 것과 안 되는 것</h2>
+    <p class="ch-lede">만족의 근거를 캐물었더니, 만족이 아니라 체념에 가까운 구간이 드러났다.</p>
+    <div class="ch-flow"><span>인터뷰어가 사례를 요청</span>추상적 만족 진술을 구체 사례로 내리는 데 세 번의 되묻기가 필요했다.</div>
+  </div>
+  <div class="ch-rule"></div>
+
+  <div class="marker solo"><span>사례 확보</span></div>
+
+  <div class="turn">
+    <div class="say tone-muted"><div class="who tone-muted">인터뷰어</div><div>
+      <p>최근에 뭔가를 못 찾은 적이 있나요?</p>
+    </div></div>
+  </div>
+
+  <div class="turn">
+    <div class="say tone-primary"><div class="who tone-primary">사용자</div><div>
+      <p>있죠. 단어가 기억 안 나면 못 찾아요.</p>
+      <p>"그때 그 회의"는 검색이 안 되잖아요. 날짜도 기억 안 나고.</p>
+    </div></div>
+    <div class="note">전문 검색의 한계가 아니라 진입점의 한계다. 시간·맥락 기반 탐색이 비어 있다는 신호.</div>
+  </div>
+
+</section>
+
+<section class="ch" id="c3">
+  <div class="ch-head">
+    <span class="ch-num">03</span>
+    <h2>가격 — 올려도 남을 것인가</h2>
+    <p class="ch-lede">가상 시나리오를 던졌고, 답은 기능이 아니라 이주 비용으로 돌아왔다.</p>
+    <div class="ch-flow"><span>인터뷰어가 가정 질문</span>가격 민감도를 물었으나 답변은 전환 비용 이야기로 흘렀다.</div>
+  </div>
+  <div class="ch-rule"></div>
+
+  <div class="marker solo"><span>가정 질문</span></div>
+
+  <div class="turn">
+    <div class="say tone-primary"><div class="who tone-primary">사용자</div><div>
+      <p>올라도 쓸 것 같아요. 옮기는 게 더 비싸요.</p>
+      <p>2년치 노트를 어디로 옮기겠어요.</p>
+    </div></div>
+    <div class="note">충성도가 아니라 락인이다. 만족도 조사에서 높게 나오는 응답이 실제로는 이 구조일 때가 많다.</div>
+  </div>
+
+  <div class="an">
+    <div class="an-tag">판단</div>
+    <h3>가격 저항이 낮은 이유를 만족으로 읽으면 틀린다</h3>
+    <p>이탈하지 않는 이유가 제품 가치가 아니라 데이터 이주 비용이라면, 경쟁사가 임포트 도구를 내놓는 순간 방어선이 사라진다.</p>
+    <p>이 사용자에게 물어야 할 다음 질문은 "얼마까지 낼 수 있나"가 아니라 "원클릭 이주가 가능하면 어떻게 하겠나"이다.</p>
+  </div>
+
+</section>
+
+<section class="ch close" id="closing">
+  <h2>종합 — 이 인터뷰가 실제로 말한 것</h2>
+  <div class="an">
+    <div class="an-tag">결론</div>
+    <h3>정리 기능의 실패가 아니라 탐색 진입점의 부재</h3>
+    <p>표면적으로는 폴더 기능을 안 쓴다는 이야기지만, 세 챕터를 관통하는 것은 "단어가 기억나지 않을 때 들어갈 문이 없다"는 한 가지 결핍이다.</p>
+    <p>구독 유지 이유가 락인이라는 점을 함께 놓고 보면, 우선순위는 정리 기능 개선이 아니라 시간·맥락 기반 탐색이다.</p>
+  </div>
+  <table>
+    <thead>
+      <tr><th></th><th>요구</th><th>발화 근거</th><th>판단</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="r">1</td><td>시간축 탐색</td><td class="quote">"그때 그 회의는 검색이 안 되잖아요"</td><td class="verdict">즉시 착수</td></tr>
+      <tr><td class="r">2</td><td>임포트/익스포트</td><td class="quote">"옮기는 게 더 비싸요"</td><td class="verdict">방어 목적 필요</td></tr>
+      <tr><td class="r">3</td><td>폴더 개선</td><td class="quote">폴더를 다시 안 열더라고요</td><td class="verdict">하지 않는다</td></tr>
+    </tbody>
+  </table>
+  <div class="todo">
+    <h3>다음 인터뷰에서 확인할 것</h3>
+    <ul>
+      <li>원클릭 이주가 가능하면 실제로 옮길 것인가</li>
+      <li>"그때 그 회의"를 찾을 때 실제로 어떤 단서부터 떠올리는가</li>
+      <li>태그를 붙이는 순간은 언제인가 — 작성 시점인가 검색 실패 후인가</li>
+    </ul>
+  </div>
+  <footer>이 문서는 렌더러 회귀 테스트용 가상 픽스처다. 실존 인물·제품·조직과 무관하다.</footer>
+</section>
+</main>
+</div><!-- /page -->
+</div><!-- /wrap -->
+
+<script>
+(function(){
+  var prog=document.getElementById('prog');
+  function onScroll(){
+    var max=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+  }
+  document.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll); onScroll();
+
+  var links=[].slice.call(document.querySelectorAll('nav a'));
+  var map={}; links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var secs=[].slice.call(document.querySelectorAll('.ch'));
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      var a=map[e.target.id]; if(!a) return;
+      if(e.isIntersecting){ links.forEach(function(l){l.classList.remove('on');}); a.classList.add('on'); }
+    });
+  },{rootMargin:'-15% 0px -70% 0px',threshold:0});
+  secs.forEach(function(s){io.observe(s);});
+
+  document.getElementById('bcToggle').addEventListener('change',function(e){
+    document.body.classList.toggle('hide-bc',e.target.checked);
+  });
+})();
+</script>
+</body>
+</html>

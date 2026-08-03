@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bold-Outline Flat Schematic — 스타일 샘플</title>
+<style>
+  :root {
+    --blue:   #80D8FF;  /* Material Light Blue A100 */
+    --red:    #F44336;  /* Material Red 500 */
+    --amber:  #FFC107;  /* Material Amber 500 */
+    --green:  #A5D6A7;  /* Material Green 200 */
+    --purple: #CE93D8;  /* Material Purple 200 */
+    --ink:    #000000;
+    --paper:  #FFFFFF;
+    --outline: 4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    padding: 64px 48px 120px;
+  }
+
+  .page-title { font-size: 34px; margin-bottom: 8px; }
+  .page-sub   { font-size: 18px; font-weight: 500; color: #555; margin-bottom: 72px; }
+
+  section { margin-bottom: 110px; }
+  .section-tag {
+    display: inline-block;
+    font-size: 15px;
+    border: 3px solid var(--ink);
+    padding: 4px 12px;
+    margin-bottom: 28px;
+  }
+
+  .diagram {
+    max-width: 1100px;
+    font-size: 28px;
+  }
+
+  /* ── 공통: 축 헤더 ── */
+  .axis-title { font-size: 28px; margin-bottom: 10px; }
+  .axis-ends {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  .axis-ends .right { text-align: right; }
+
+  /* ── 공통: 레이블 열 + 바 ── */
+  .row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    column-gap: 44px;
+    align-items: center;
+  }
+  .row + .row { margin-top: 100px; }
+  .row-label { font-size: 28px; }
+
+  .bar {
+    display: flex;
+    height: 112px;
+    border: var(--outline) solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .seg.blue   { background: var(--blue); }
+  .seg.red    { background: var(--red); }
+  .seg.amber  { background: var(--amber); }
+  .seg.green  { background: var(--green); }
+  .seg.purple { background: var(--purple); }
+  .seg.empty  { background: var(--paper); border-left: var(--outline) solid var(--ink); }
+
+  /* ── 예시 3: 레이어 스택 ── */
+  .stack { max-width: 720px; font-size: 28px; }
+  .stack .layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96px;
+    border: var(--outline) solid var(--ink);
+  }
+  .stack .layer + .layer { border-top: 0; }
+
+  /* ── 예시 4: 2×2 사분면 ── */
+  .quad-wrap {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: 1fr 56px;
+    max-width: 760px;
+  }
+  .quad-y {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .quad-y span {
+    transform: rotate(-90deg);
+    white-space: nowrap;
+  }
+  .quad-x {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    padding-top: 14px;
+  }
+  .quad {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 200px 200px;
+    border: var(--outline) solid var(--ink);
+  }
+  .quad .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 26px;
+    padding: 16px;
+  }
+
+  /* ── 예시 5: 타임라인 ── */
+  .timeline-labels {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-size: 22px;
+    margin-bottom: 12px;
+    max-width: 1100px;
+  }
+  .timeline-labels div { text-align: center; }
+
+  /* ── 예시 6: 커버리지 비교 ── */
+  .cover-note { font-size: 20px; font-weight: 500; color: #555; margin-top: 20px; }
+
+  /* ── SVG 공통 (아키텍처·플로우차트·시퀀스·체브론) ── */
+  svg { display: block; }
+  svg .box  { stroke: var(--ink); stroke-width: 4; }
+  svg .f-blue   { fill: var(--blue); }
+  svg .f-red    { fill: var(--red); }
+  svg .f-amber  { fill: var(--amber); }
+  svg .f-green  { fill: var(--green); }
+  svg .f-purple { fill: var(--purple); }
+  svg .f-paper  { fill: var(--paper); }
+  svg text {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 24px;
+    fill: var(--ink);
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  svg text.t-white { fill: #fff; }
+  svg text.lbl { font-size: 20px; }
+  svg .conn {
+    stroke: var(--ink);
+    stroke-width: 4;
+    fill: none;
+    marker-end: url(#arrowhead);
+  }
+  svg .lifeline { stroke: var(--ink); stroke-width: 4; }
+
+  /* ── 예시 11: 퍼널 ── */
+  .funnel { display: flex; flex-direction: column; align-items: center; max-width: 940px; }
+  .funnel .step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 88px;
+    border: var(--outline) solid var(--ink);
+    font-size: 26px;
+  }
+  .funnel .step + .step { margin-top: calc(-1 * var(--outline)); }
+
+  /* ── 예시 12: 매트릭스 ── */
+  .matrix {
+    display: grid;
+    grid-template-columns: 260px repeat(3, 180px);
+    gap: var(--outline);
+    background: var(--ink);
+    border: var(--outline) solid var(--ink);
+    width: fit-content;
+    font-size: 24px;
+  }
+  .matrix > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper);
+    height: 76px;
+    padding: 0 20px;
+  }
+  .matrix .head { background: var(--amber); }
+  .matrix .name { justify-content: flex-start; }
+  .matrix .yes  { background: var(--blue); }
+
+  /* ── 예시 13: 중첩 컨테이너 ── */
+  .nest { border: var(--outline) solid var(--ink); padding: 20px 24px 28px; width: fit-content; }
+  .nest-tag {
+    display: inline-block;
+    font-size: 18px;
+    border: 3px solid var(--ink);
+    padding: 3px 10px;
+    margin-bottom: 18px;
+    background: var(--paper);
+  }
+  .nest-row { display: flex; gap: 28px; align-items: stretch; }
+  .nest .blue-bg   { background: var(--blue); }
+  .nest .amber-bg  { background: var(--amber); }
+  .nest .green-bg  { background: var(--green); }
+  .nest .purple-bg { background: var(--purple); }
+  .chip {
+    display: inline-block;
+    border: 3px solid var(--ink);
+    background: var(--paper);
+    padding: 8px 16px;
+    font-size: 20px;
+    margin: 0 10px 10px 0;
+  }
+  .nest-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  .nest-side .store {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--outline) solid var(--ink);
+    font-size: 24px;
+    padding: 0 32px;
+    flex: 1;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Bold-Outline Flat Schematic</h1>
+<p class="page-sub">순백 배경 · 고채도 평면색 · 검정 4px 직각 외곽선 · 흰색 구분선 · 단일 크기 굵은 고딕 — 위계는 크기가 아니라 위치로 표현</p>
+
+<!-- ════════════════════ 1. 원본 재현 ════════════════════ -->
+<section>
+  <div class="section-tag">1. 원본 재현 — Threshold Shift (경계 이동)</div>
+  <div class="diagram">
+    <div class="axis-title">문제 난이도 →</div>
+    <div class="axis-ends"><div>쉬움</div><div class="right">어려움</div></div>
+
+    <div class="row">
+      <div class="row-label">이전</div>
+      <div class="bar">
+        <div class="seg blue" style="width:59%">에이전트 툴 콜링 기반</div>
+        <div class="seg red" style="width:41%">파이프라인 기반</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">이후</div>
+      <div class="bar">
+        <div class="seg blue" style="width:30%"></div>
+        <div class="seg red" style="width:70%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 2. 3분할 스펙트럼 ════════════════════ -->
+<section>
+  <div class="section-tag">2. 스펙트럼 3분할 — 채점 방식 분담</div>
+  <div class="diagram">
+    <div class="axis-title">답안 복잡도 →</div>
+    <div class="axis-ends"><div>단답</div><div class="right">서술형</div></div>
+
+    <div class="row">
+      <div class="row-label">현재</div>
+      <div class="bar">
+        <div class="seg green" style="width:34%">정답 매칭</div>
+        <div class="seg blue" style="width:38%">규칙 기반</div>
+        <div class="seg red" style="width:28%">LLM 루브릭</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">목표</div>
+      <div class="bar">
+        <div class="seg green" style="width:34%"></div>
+        <div class="seg blue" style="width:16%"></div>
+        <div class="seg red" style="width:50%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 3. 레이어 스택 ════════════════════ -->
+<section>
+  <div class="section-tag">3. 레이어 스택 — 아키텍처 계층</div>
+  <div class="stack">
+    <div class="layer" style="background: var(--blue)">UI Layer (ui/, graphql/)</div>
+    <div class="layer" style="background: var(--amber)">Application Layer (application/)</div>
+    <div class="layer" style="background: var(--red); color: #fff;">Domain Layer (domain/)</div>
+  </div>
+</section>
+
+<!-- ════════════════════ 4. 2×2 사분면 ════════════════════ -->
+<section>
+  <div class="section-tag">4. 2×2 사분면 — 처리 방식 선택</div>
+  <div class="quad-wrap">
+    <div class="quad-y"><span>채점 정확도 요구 →</span></div>
+    <div class="quad">
+      <div class="cell blue seg">사람 검수 큐</div>
+      <div class="cell red seg">LLM 루브릭<br>+ 사람 검수</div>
+      <div class="cell green seg">정답 매칭</div>
+      <div class="cell amber seg">LLM 단독 채점</div>
+    </div>
+    <div class="quad-x">문제 난이도 →</div>
+  </div>
+</section>
+
+<!-- ════════════════════ 5. 타임라인 / 페이즈 바 ════════════════════ -->
+<section>
+  <div class="section-tag">5. 페이즈 타임라인 — 마이그레이션 단계</div>
+  <div class="diagram">
+    <div class="timeline-labels">
+      <div>1단계</div><div>2단계</div><div>3단계</div><div>4단계</div>
+    </div>
+    <div class="bar" style="height: 96px;">
+      <div class="seg green" style="width:25%">병행 운영</div>
+      <div class="seg blue" style="width:25%">쉬운 문제 전환</div>
+      <div class="seg amber" style="width:25%">전 난이도 전환</div>
+      <div class="seg red" style="width:25%">구 파이프라인 제거</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 6. 커버리지 비교 ════════════════════ -->
+<section>
+  <div class="section-tag">6. 커버리지 비교 — 빈 영역으로 갭 표현</div>
+  <div class="diagram">
+    <div class="row">
+      <div class="row-label">자동<br>채점</div>
+      <div class="bar" style="height: 96px;">
+        <div class="seg purple" style="width:72%">커버</div>
+        <div class="seg empty" style="width:28%">수동 처리</div>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 48px;">
+      <div class="row-label">유사<br>문제</div>
+      <div class="bar" style="height: 96px;">
+        <div class="seg purple" style="width:45%">커버</div>
+        <div class="seg empty" style="width:55%">미지원</div>
+      </div>
+    </div>
+    <p class="cover-note">빈 영역(흰색 채움)은 "아직 없음"을 나타낸다 — 회색이나 빗금 대신 흰 채움 + 검정 외곽선 유지가 이 스타일의 방식.</p>
+  </div>
+</section>
+
+<!-- 공유 화살표 머리 정의 -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="arrowhead" markerWidth="18" markerHeight="18" refX="14" refY="9"
+            orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2,2 L16,9 L2,16 Z" fill="#000"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- ════════════════════ 7. 시스템 아키텍처 ════════════════════ -->
+<section>
+  <div class="section-tag">7. 시스템 아키텍처 — 박스 + 화살표</div>
+  <svg viewBox="0 0 1060 420" style="max-width:1060px">
+    <rect class="box f-blue" x="10" y="60" width="190" height="90"/>
+    <text x="105" y="105">앱 클라이언트</text>
+
+    <rect class="box f-amber" x="330" y="60" width="250" height="90"/>
+    <text x="455" y="92">API 서버</text>
+    <text x="455" y="122" class="lbl">Django Ninja · Lambda</text>
+
+    <rect class="box f-green" x="800" y="20" width="240" height="80"/>
+    <text x="920" y="60">PostgreSQL</text>
+
+    <rect class="box f-purple" x="800" y="140" width="240" height="80"/>
+    <text x="920" y="180">Redis</text>
+
+    <rect class="box f-purple" x="330" y="290" width="250" height="90"/>
+    <text x="455" y="335">Celery 워커</text>
+
+    <rect class="box f-red" x="800" y="290" width="240" height="90"/>
+    <text x="920" y="335" class="t-white">Gemini API</text>
+
+    <line class="conn" x1="204" y1="105" x2="318" y2="105"/>
+    <text x="261" y="82" class="lbl">HTTPS</text>
+
+    <line class="conn" x1="584" y1="85"  x2="788" y2="62"/>
+    <line class="conn" x1="584" y1="125" x2="788" y2="172"/>
+
+    <line class="conn" x1="455" y1="154" x2="455" y2="282"/>
+    <text x="472" y="218" class="lbl" style="text-anchor:start">비동기 큐잉</text>
+
+    <line class="conn" x1="584" y1="335" x2="788" y2="335"/>
+    <text x="687" y="312" class="lbl">손글씨 평가</text>
+  </svg>
+</section>
+
+<!-- ════════════════════ 8. 플로우차트 ════════════════════ -->
+<section>
+  <div class="section-tag">8. 플로우차트 — 채점 분기</div>
+  <svg viewBox="0 0 1060 700" style="max-width:1060px">
+    <rect class="box f-blue" x="40" y="40" width="220" height="80"/>
+    <text x="150" y="80">답안 제출</text>
+
+    <line class="conn" x1="264" y1="80" x2="342" y2="80"/>
+
+    <polygon class="box f-amber" points="470,20 590,80 470,140 350,80"/>
+    <text x="470" y="80" style="font-size:22px">단답형?</text>
+
+    <line class="conn" x1="594" y1="80" x2="746" y2="80"/>
+    <text x="670" y="58" class="lbl">YES</text>
+    <rect class="box f-green" x="755" y="40" width="260" height="80"/>
+    <text x="885" y="80">정답 매칭 채점</text>
+
+    <line class="conn" x1="470" y1="144" x2="470" y2="248"/>
+    <text x="490" y="196" class="lbl" style="text-anchor:start">NO</text>
+    <rect class="box f-red" x="340" y="255" width="260" height="80"/>
+    <text x="470" y="295" class="t-white">LLM 루브릭 평가</text>
+
+    <line class="conn" x1="470" y1="339" x2="470" y2="413"/>
+
+    <polygon class="box f-amber" points="470,420 605,480 470,540 335,480"/>
+    <text x="470" y="480" style="font-size:22px">신뢰도 ≥ 0.9?</text>
+
+    <line class="conn" x1="609" y1="480" x2="746" y2="480"/>
+    <text x="675" y="458" class="lbl">YES</text>
+    <rect class="box f-green" x="755" y="440" width="260" height="80"/>
+    <text x="885" y="480">자동 확정</text>
+
+    <line class="conn" x1="470" y1="544" x2="470" y2="588"/>
+    <text x="490" y="566" class="lbl" style="text-anchor:start">NO</text>
+    <rect class="box f-purple" x="340" y="595" width="260" height="80"/>
+    <text x="470" y="635">사람 검수 큐</text>
+  </svg>
+</section>
+
+<!-- ════════════════════ 9. 시퀀스 다이어그램 ════════════════════ -->
+<section>
+  <div class="section-tag">9. 시퀀스 다이어그램 — 비동기 채점 흐름</div>
+  <svg viewBox="0 0 1060 560" style="max-width:1060px">
+    <line class="lifeline" x1="130" y1="80" x2="130" y2="540"/>
+    <line class="lifeline" x1="430" y1="80" x2="430" y2="540"/>
+    <line class="lifeline" x1="700" y1="80" x2="700" y2="540"/>
+    <line class="lifeline" x1="950" y1="80" x2="950" y2="540"/>
+
+    <rect class="box f-blue" x="30" y="10" width="200" height="70"/>
+    <text x="130" y="45">클라이언트</text>
+    <rect class="box f-amber" x="330" y="10" width="200" height="70"/>
+    <text x="430" y="45">API</text>
+    <rect class="box f-purple" x="600" y="10" width="200" height="70"/>
+    <text x="700" y="45">Celery</text>
+    <rect class="box f-red" x="850" y="10" width="200" height="70"/>
+    <text x="950" y="45" class="t-white">Gemini</text>
+
+    <line class="conn" x1="132" y1="150" x2="422" y2="150"/>
+    <text x="277" y="128" class="lbl">답안 제출</text>
+
+    <line class="conn" x1="428" y1="210" x2="138" y2="210"/>
+    <text x="283" y="188" class="lbl">202 접수</text>
+
+    <line class="conn" x1="432" y1="280" x2="692" y2="280"/>
+    <text x="562" y="258" class="lbl">평가 태스크</text>
+
+    <line class="conn" x1="702" y1="350" x2="942" y2="350"/>
+    <text x="822" y="328" class="lbl">손글씨 인식 요청</text>
+
+    <line class="conn" x1="948" y1="410" x2="708" y2="410"/>
+    <text x="828" y="388" class="lbl">인식 결과</text>
+
+    <line class="conn" x1="698" y1="490" x2="138" y2="490"/>
+    <text x="418" y="468" class="lbl">푸시 알림 (채점 완료)</text>
+  </svg>
+</section>
+
+<!-- ════════════════════ 10. 체브론 파이프라인 ════════════════════ -->
+<section>
+  <div class="section-tag">10. 체브론 파이프라인 — 처리 단계</div>
+  <svg viewBox="0 0 1020 140" style="max-width:1020px">
+    <polygon class="box f-blue"  points="10,10 230,10 260,70 230,130 10,130"/>
+    <text x="125" y="70">인식</text>
+    <polygon class="box f-green" points="260,10 480,10 510,70 480,130 260,130 290,70"/>
+    <text x="390" y="70">파싱</text>
+    <polygon class="box f-amber" points="510,10 730,10 760,70 730,130 510,130 540,70"/>
+    <text x="640" y="70">평가</text>
+    <polygon class="box f-red"   points="760,10 980,10 1010,70 980,130 760,130 790,70"/>
+    <text x="890" y="70" class="t-white">리포트</text>
+  </svg>
+</section>
+
+<!-- ════════════════════ 11. 퍼널 ════════════════════ -->
+<section>
+  <div class="section-tag">11. 퍼널 — 학습 전환</div>
+  <div class="funnel">
+    <div class="step" style="width:100%; background: var(--blue)">문제 노출 100%</div>
+    <div class="step" style="width:74%; background: var(--green)">풀이 시작 72%</div>
+    <div class="step" style="width:54%; background: var(--amber)">답안 제출 51%</div>
+    <div class="step" style="width:38%; background: var(--red); color:#fff;">정답 34%</div>
+  </div>
+</section>
+
+<!-- ════════════════════ 12. 매트릭스 ════════════════════ -->
+<section>
+  <div class="section-tag">12. 매트릭스 — 플랜별 기능 비교</div>
+  <div class="matrix">
+    <div class="head name">기능</div><div class="head">무료</div><div class="head">프리미엄</div><div class="head">학원용</div>
+    <div class="name">자동 채점</div><div class="yes">✓</div><div class="yes">✓</div><div class="yes">✓</div>
+    <div class="name">손글씨 인식</div><div>—</div><div class="yes">✓</div><div class="yes">✓</div>
+    <div class="name">유사 문제 생성</div><div>—</div><div class="yes">✓</div><div class="yes">✓</div>
+    <div class="name">AI 학습 리포트</div><div>—</div><div>—</div><div class="yes">✓</div>
+  </div>
+</section>
+
+<!-- ════════════════════ 13. 중첩 컨테이너 ════════════════════ -->
+<section>
+  <div class="section-tag">13. 중첩 컨테이너 — 배포 구조</div>
+  <div class="nest">
+    <div class="nest-tag">AWS ap-northeast-2</div>
+    <div class="nest-row">
+      <div class="nest">
+        <div class="nest-tag">Lambda (Zappa)</div>
+        <div class="nest amber-bg">
+          <div class="nest-tag">Django 4.2</div>
+          <div>
+            <span class="chip">problems</span><span class="chip">users</span><span class="chip">homeworks</span><br>
+            <span class="chip">ai_report</span><span class="chip">payments</span><span class="chip">community</span>
+          </div>
+        </div>
+      </div>
+      <div class="nest-side">
+        <div class="store green-bg">RDS<br>PostgreSQL</div>
+        <div class="store purple-bg">ElastiCache<br>Redis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

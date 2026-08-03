@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "interview-doc",
+  "displayName": "Interview Doc",
+  "version": "1.0.0",
+  "description": "Annotated single-file HTML report from an interview transcript in any language.",
+  "author": { "name": "esc5221", "url": "https://github.com/esc5221" },
+  "repository": "https://github.com/esc5221/claude-kit",
+  "license": "MIT",
+  "keywords": ["interview", "transcript", "analysis", "report", "html"],
+  "skills": ["./"]
+}

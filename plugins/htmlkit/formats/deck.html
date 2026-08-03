@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>{{TITLE}}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+<!-- {{FONT_LINKS}} : looks/<look>.md 의 폰트 링크를 여기에 붙인다 (mono look은 비움) -->
+{{FONT_LINKS}}
+<style>
+/* ===== LOOK TOKENS : looks/<look>.md 의 :root 블록을 여기에 주입 ===== */
+{{LOOK_VARS}}
+
+/* ===== deck format : 슬라이드 구조 + 컴포넌트 (look 비종속, 변수만 참조) ===== */
+.reveal{ font-family:var(--font-body); font-size:30px; color:var(--ink); font-weight:400; -webkit-font-smoothing:antialiased; }
+.reveal-viewport{ background:var(--bg); }
+.reveal .slides{ text-align:left; }
+.reveal .slides section{ height:100%; top:0!important; padding:0; }
+
+.slide-wrap{ height:100%; display:flex; flex-direction:column; padding:74px 86px 70px; box-sizing:border-box; }
+.slide-wrap.center{ justify-content:center; }
+
+.kicker{ font-family:var(--font-mono); font-size:.5em; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 14px; display:flex; align-items:center; gap:12px; }
+.kicker::before{ content:""; width:26px; height:2px; background:var(--accent); display:inline-block; }
+.kicker.good{ color:var(--good); } .kicker.good::before{ background:var(--good); }
+.kicker.warn{ color:var(--warn); } .kicker.warn::before{ background:var(--warn); }
+.kicker.bad{ color:var(--bad); } .kicker.bad::before{ background:var(--bad); }
+
+.reveal h1{ font-size:1.55em; font-weight:800; letter-spacing:-.02em; line-height:1.08; margin:0 0 .35em; color:var(--ink); text-transform:none; }
+.reveal h2{ font-size:1.18em; font-weight:700; letter-spacing:-.015em; line-height:1.12; margin:0 0 .55em; color:var(--ink); text-transform:none; }
+.reveal h3{ font-size:.74em; font-weight:700; letter-spacing:-.01em; margin:0 0 .3em; color:var(--ink); text-transform:none; }
+.reveal p{ line-height:1.5; margin:0 0 .6em; color:var(--ink-soft); }
+.reveal strong{ color:var(--ink); font-weight:var(--weight-strong); }
+.reveal em{ font-style:normal; background:var(--mark-bg); color:var(--mark-ink); padding:0 .25em; border-radius:3px; font-weight:500; }
+
+.lead{ font-size:.82em; color:var(--ink-soft); line-height:1.55; max-width:21em; }
+
+.reveal code{ font-family:var(--font-mono); font-size:.82em; background:var(--code-bg); padding:.08em .38em; border-radius:5px; color:var(--code-ink); font-weight:500; }
+.codeblock{ font-family:var(--font-mono); font-size:.5em; line-height:1.6; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px 26px; color:var(--ink-soft); white-space:pre; overflow:auto; box-shadow:var(--shadow); }
+.codeblock .c{ color:var(--accent); font-weight:600; }
+.codeblock .g{ color:var(--good); font-weight:600; }
+.codeblock .a{ color:var(--warn); font-weight:600; }
+.codeblock .r{ color:var(--bad); font-weight:600; }
+.codeblock .d{ color:var(--ink-faint); }
+.codeblock .q{ color:var(--bad); font-style:italic; }
+
+.grid{ display:grid; gap:16px; margin-top:6px; }
+.g2{ grid-template-columns:1fr 1fr; }
+.g3{ grid-template-columns:1fr 1fr 1fr; }
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow); }
+.card h3{ font-size:.62em; display:flex; align-items:baseline; gap:10px; }
+.card .num{ font-family:var(--font-mono); color:var(--accent); font-weight:700; font-size:1.05em; }
+.card p{ font-size:.6em; line-height:1.5; margin:0; color:var(--ink-soft); }
+.card .tag{ font-family:var(--font-mono); font-size:.46em; color:var(--ink-faint); letter-spacing:.04em; text-transform:uppercase; }
+
+.reveal ul{ list-style:none; margin:0; padding:0; }
+.reveal ul li{ position:relative; padding-left:1.3em; margin:0 0 .55em; line-height:1.48; font-size:.78em; color:var(--ink-soft); }
+.reveal ul li::before{ content:"›"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+.reveal ul li strong{ color:var(--ink); }
+
+.quote{ font-family:var(--font-mono); font-size:.58em; line-height:1.55; color:var(--ink); background:var(--accent-soft); border-left:3px solid var(--accent); padding:16px 22px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin:8px 0; }
+.quote.bad{ background:var(--bad-soft); border-color:var(--bad); }
+.quote .who{ display:block; margin-top:8px; color:var(--ink-faint); font-style:normal; font-size:.85em; }
+
+.metrics{ display:flex; gap:38px; margin:18px 0 4px; flex-wrap:wrap; }
+.metric .v{ font-family:var(--font-mono); font-size:1.5em; font-weight:700; color:var(--ink); letter-spacing:-.02em; }
+.metric .v .u{ font-size:.5em; color:var(--ink-faint); font-weight:500; margin-left:3px; }
+.metric .l{ font-size:.52em; color:var(--ink-faint); margin-top:2px; letter-spacing:.02em; }
+
+.slide-meta{ position:absolute; top:40px; right:86px; font-family:var(--font-mono); font-size:.42em; color:var(--ink-faint); letter-spacing:.06em; }
+
+.cover .eyebrow{ font-family:var(--font-mono); font-size:.6em; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:24px; }
+.cover .period{ font-family:var(--font-mono); font-size:.72em; color:var(--ink-faint); margin-top:18px; letter-spacing:.04em; }
+.cover .sub{ font-size:.78em; color:var(--ink-soft); max-width:24em; margin-top:28px; line-height:1.55; }
+.cover .stamp{ position:absolute; bottom:64px; left:86px; font-family:var(--font-mono); font-size:.46em; color:var(--ink-faint); letter-spacing:.05em; display:flex; gap:24px; }
+.cover .stamp b{ color:var(--accent); font-weight:600; }
+
+.foot{ margin-top:auto; padding-top:18px; font-family:var(--font-mono); font-size:.42em; color:var(--ink-faint); letter-spacing:.05em; border-top:1px solid var(--line); display:flex; justify-content:space-between; }
+
+.pill{ display:inline-block; font-family:var(--font-mono); font-size:.82em; font-weight:600; padding:2px 10px; border-radius:20px; letter-spacing:.02em; }
+.pill.b{ background:var(--accent-soft); color:var(--accent); }
+.pill.g{ background:var(--good-soft); color:var(--good); }
+.pill.a{ background:var(--warn-soft); color:var(--warn); }
+
+.two{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start; }
+.note{ font-size:.62em; color:var(--ink-faint); line-height:1.5; }
+
+.reveal .progress{ height:3px; color:var(--accent); }
+.reveal .slide-number{ font-family:var(--font-mono); font-size:13px; background:transparent; color:var(--ink-faint); }
+.reveal .controls{ color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+{{SLIDES}}
+
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  hash:true, slideNumber:'c/t', transition:'fade', transitionSpeed:'fast', backgroundTransition:'fade',
+  width:1280, height:720, margin:0, controls:true, progress:true, center:false, controlsTutorial:false
+});
+</script>
+</body>
+</html>

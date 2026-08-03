@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "lullu",
+  "description": "Prompt protocols and single-file HTML output skills for Claude Code",
+  "owner": {
+    "name": "esc5221",
+    "url": "https://github.com/esc5221"
+  },
+  "plugins": [
+    {
+      "name": "mantra-protocol",
+      "source": "./plugins/mantra-protocol",
+      "description": "Self-enforcing prompt protocol. Pins non-negotiable principles to a mantra the agent recites before every turn, so specification fidelity survives long sessions.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "prompt",
+        "protocol",
+        "specification",
+        "drift",
+        "mantra"
+      ]
+    },
+    {
+      "name": "review-doc",
+      "source": "./plugins/review-doc",
+      "description": "Turn any content into a single self-contained HTML review file with per-item approve/reject toggles and comment boxes. Autosaves to localStorage, copies verdicts as Markdown.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "review",
+        "html",
+        "comment",
+        "approve",
+        "annotation"
+      ]
+    },
+    {
+      "name": "htmlkit",
+      "source": "./plugins/htmlkit",
+      "description": "Build single-file HTML decks, narrative reports, and ADRs by composing structure (format) and design (look) independently.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "html",
+        "slides",
+        "deck",
+        "report",
+        "adr",
+        "presentation"
+      ]
+    },
+    {
+      "name": "schematic",
+      "source": "./plugins/schematic",
+      "description": "Draw system logic, architecture, and product strategy as Bold-Outline Flat single-file HTML schematics — swimlanes, flowcharts, sequences, matrices.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "diagram",
+        "architecture",
+        "schematic",
+        "svg",
+        "flowchart"
+      ]
+    },
+    {
+      "name": "interview-doc",
+      "source": "./plugins/interview-doc",
+      "description": "Turn an interview transcript in any language into a single annotated HTML report with per-passage commentary and per-chapter synthesis.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "interview",
+        "transcript",
+        "analysis",
+        "report",
+        "html"
+      ]
+    }
+  ]
+}

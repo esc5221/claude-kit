@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<!-- 차트가 필요할 때만 남기고, 안 쓰면 이 줄 삭제 -->
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<!-- {{FONT_LINKS}} : looks/<look>.md 폰트 링크 (mono look은 비움) -->
+{{FONT_LINKS}}
+<style>
+/* ===== LOOK TOKENS : looks/<look>.md 의 :root 블록 주입 ===== */
+{{LOOK_VARS}}
+
+/* ===== report format : 스크롤 문서 구조 + 컴포넌트 (look 비종속) ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+/* font-smoothing은 기본값(subpixel) 유지 — antialiased는 macOS에서 글리프를 얇게 만들어 가독성↓ */
+body{ font-family:var(--font-body); font-weight:var(--weight-base,400); font-size:15px; line-height:1.6; color:var(--ink); background:var(--bg); max-width:1050px; margin:0 auto; padding:56px 28px 80px; }
+/* mono look이면 정보밀집을 위해 본문을 작게. 단 12px는 한글이 얇아 보인다 → 13px */
+body.dense{ font-size:13px; line-height:1.6; }
+
+h1{ font-size:1.8em; font-weight:800; letter-spacing:-.02em; line-height:1.15; margin:0 0 6px; }
+h2{ font-size:1.25em; font-weight:700; letter-spacing:-.01em; margin:38px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+h3{ font-size:.92em; font-weight:700; margin:20px 0 8px; color:var(--ink-soft); }
+p{ margin:0 0 .8em; color:var(--ink-soft); }
+strong{ color:var(--ink); font-weight:var(--weight-strong); }
+em{ font-style:normal; background:var(--mark-bg); color:var(--mark-ink); padding:0 .22em; border-radius:3px; }
+a{ color:var(--accent); text-decoration:none; }
+
+.meta{ font-size:.8em; color:var(--ink-faint); margin:4px 0 22px; line-height:1.6; }
+.kicker{ font-family:var(--font-mono); font-size:.72em; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; }
+.lead{ font-size:1.05em; color:var(--ink-soft); line-height:1.6; max-width:42em; margin-bottom:1.2em; }
+
+code{ font-family:var(--font-mono); font-size:.86em; background:var(--code-bg); padding:.1em .4em; border-radius:5px; color:var(--code-ink); }
+pre{ font-family:var(--font-mono); font-size:.82em; line-height:1.55; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 22px; overflow:auto; box-shadow:var(--shadow); margin:0 0 1em; color:var(--ink-soft); white-space:pre; }
+pre .c{color:var(--accent);font-weight:600} pre .g{color:var(--good);font-weight:600} pre .a{color:var(--warn);font-weight:600} pre .r{color:var(--bad);font-weight:600} pre .d{color:var(--ink-faint)}
+
+/* 콜아웃 */
+.note{ font-size:.86em; color:var(--ink-soft); margin:8px 0 14px; padding:10px 14px; background:var(--warn-soft); border-left:3px solid var(--warn); border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+.finding{ font-size:.86em; color:var(--ink); margin:8px 0 14px; padding:10px 14px; background:var(--bad-soft); border-left:3px solid var(--bad); border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+
+/* KPI strip */
+.kpi-row{ display:flex; gap:24px; flex-wrap:wrap; margin:16px 0 26px; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.kpi{ min-width:150px; }
+.kpi-label{ font-family:var(--font-mono); font-size:.62em; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; }
+.kpi-val{ font-size:1.7em; font-weight:700; margin-top:3px; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+.kpi-sub{ font-size:.66em; color:var(--ink-faint); margin-top:2px; }
+
+/* 카드 (narrative) */
+.grid{ display:grid; gap:16px; margin:8px 0 18px; }
+.g2{ grid-template-columns:1fr 1fr; } .g3{ grid-template-columns:1fr 1fr 1fr; }
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); }
+.card h3{ margin:0 0 6px; font-size:.86em; color:var(--ink); }
+.card p{ margin:0; font-size:.84em; }
+
+/* 인용 */
+.quote{ font-family:var(--font-mono); font-size:.86em; line-height:1.55; color:var(--ink); background:var(--accent-soft); border-left:3px solid var(--accent); padding:14px 18px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin:10px 0 16px; }
+.quote.bad{ background:var(--bad-soft); border-color:var(--bad); }
+
+/* 표 */
+table{ width:100%; border-collapse:collapse; font-size:.8em; margin:6px 0 18px; }
+th,td{ padding:5px 10px; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap; }
+th{ background:var(--code-bg); font-weight:700; }
+td:first-child,th:first-child{ text-align:left; }
+.num{ font-variant-numeric:tabular-nums; }
+.up{ color:var(--bad); } .dn{ color:var(--good); }
+
+/* 차트 */
+.chart{ margin:8px 0 6px; }
+
+/* 리스트 */
+ul.clean{ list-style:none; padding:0; margin:0 0 1em; }
+ul.clean li{ position:relative; padding-left:1.3em; margin:0 0 .5em; font-size:.92em; color:var(--ink-soft); }
+ul.clean li::before{ content:"›"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+.foot{ margin-top:48px; padding-top:16px; border-top:1px solid var(--line); font-family:var(--font-mono); font-size:.72em; color:var(--ink-faint); }
+</style>
+</head>
+<body>
+
+{{BODY}}
+
+</body>
+</html>

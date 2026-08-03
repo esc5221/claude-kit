@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "review-doc",
+  "displayName": "Review Doc",
+  "version": "1.0.0",
+  "description": "Single self-contained HTML review file with per-item approve/reject and comments.",
+  "author": { "name": "esc5221", "url": "https://github.com/esc5221" },
+  "repository": "https://github.com/esc5221/claude-kit",
+  "license": "MIT",
+  "keywords": ["review", "html", "comment", "approve", "annotation"],
+  "skills": ["./"]
+}

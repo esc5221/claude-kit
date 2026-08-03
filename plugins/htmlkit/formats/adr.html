@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<!-- {{FONT_LINKS}} : looks/<look>.md 폰트 링크 (paper/mono look은 비움) -->
+{{FONT_LINKS}}
+<style>
+/* ===== LOOK TOKENS : looks/<look>.md 의 :root 블록 주입 ===== */
+{{LOOK_VARS}}
+
+/* ===== adr format : 회색 배경 위 흰 종이 카드 문서 (look 비종속, 변수만 참조) ===== */
+*{box-sizing:border-box}
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.64; }
+.page{ max-width:880px; margin:34px auto; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); padding:54px 60px 80px; }
+@media(max-width:720px){ .page{ padding:34px 24px; } }
+
+/* masthead */
+.mast{ border-bottom:2px solid var(--ink); padding-bottom:14px; margin-bottom:8px; }
+.mast .kicker{ font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+h1{ font-size:23px; font-weight:700; letter-spacing:-.015em; margin:6px 0 0; line-height:1.3; }
+
+/* meta grid */
+.meta{ display:grid; grid-template-columns:repeat(2,1fr); gap:2px 30px; margin:16px 0 4px; font-size:12.5px; font-family:var(--font-mono); }
+.meta div{ display:flex; gap:8px; padding:3px 0; border-bottom:1px solid var(--line-soft); }
+.meta .k{ color:var(--ink-faint); min-width:88px; }
+.meta .v{ color:var(--ink-soft); }
+.status{ display:inline-block; font-family:var(--font-mono); font-size:11px; font-weight:700; padding:1px 8px; border-radius:var(--radius-sm); background:var(--warn-soft); color:var(--warn); }
+.status.good{ background:var(--good-soft); color:var(--good); }
+.status.accent{ background:var(--accent-soft); color:var(--accent); }
+
+/* 번호 매긴 섹션 */
+h2{ font-size:16.5px; font-weight:680; letter-spacing:-.01em; margin:38px 0 10px; padding-top:16px; border-top:1px solid var(--line); }
+h2 .no{ font-family:var(--font-mono); color:var(--accent); font-weight:700; margin-right:12px; font-size:14px; }
+h3{ font-size:13.5px; font-weight:680; margin:20px 0 6px; color:var(--ink-soft); }
+p{ margin:9px 0; color:var(--ink-soft); }
+.lead{ font-size:15px; color:var(--ink-soft); }
+strong{ font-weight:var(--weight-strong); color:var(--ink); }
+em{ font-style:italic; color:var(--ink); background:none; padding:0; }
+code{ font-family:var(--font-mono); font-size:.84em; background:var(--code-bg); padding:1px 5px; border-radius:var(--radius-sm); color:var(--code-ink); }
+
+/* 코드/다이어그램 블록 */
+pre{ font-family:var(--font-mono); font-size:12.2px; line-height:1.55; background:var(--code-bg); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:var(--radius); padding:14px 16px; overflow-x:auto; color:var(--ink-soft); margin:14px 0; white-space:pre; }
+pre b{ color:var(--ink); font-weight:700; }
+pre .c{ color:var(--ink-faint); }
+pre .g{ color:var(--good); font-weight:600; } pre .a{ color:var(--warn); font-weight:600; } pre .r{ color:var(--bad); font-weight:600; }
+
+/* callout — 라벨 달린 박스 3종 */
+.callout{ border:1px solid var(--line); border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:var(--radius); padding:11px 15px; margin:14px 0; font-size:14px; color:var(--ink); }
+.callout .lab{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); display:block; margin-bottom:3px; }
+.callout.decision{ border-left-color:var(--good); background:var(--good-soft); }
+.callout.decision .lab{ color:var(--good); }
+.callout.constraint{ border-left-color:var(--warn); background:var(--warn-soft); }
+.callout.constraint .lab{ color:var(--warn); }
+
+/* 표 — mono 헤더 + 채택행 강조 */
+table{ width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; }
+th,td{ text-align:left; padding:8px 11px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+th{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-weight:700; border-bottom:1.5px solid var(--line); }
+td code{ font-size:11.5px; }
+tbody tr:hover{ background:var(--accent-soft); }
+.chosen td{ background:var(--good-soft); }
+.chosen td:first-child{ font-weight:680; }
+
+/* 리스트 · 보조 */
+ul{ margin:8px 0; padding-left:20px; } li{ margin:4px 0; color:var(--ink-soft); }
+.sm{ font-size:12.5px; color:var(--ink-faint); }
+.rev{ font-family:var(--font-mono); font-size:12px; }
+.rev th,.rev td{ padding:5px 10px; }
+footer{ margin-top:44px; padding-top:14px; border-top:2px solid var(--ink); font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono); }
+</style>
+</head>
+<body>
+<div class="page">
+
+{{BODY}}
+
+</div>
+</body>
+</html>

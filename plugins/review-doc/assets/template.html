@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{DOC_TITLE}}</title>
+<style>
+  :root{
+    --bg1:#eef2ff; --bg2:#fdf2f8; --card:#ffffff; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+    --accent:#4f46e5; --accent-weak:#e0e7ff;
+    --ok:#16a34a; --ok-weak:#dcfce7; --ok-bd:#86efac;
+    --no:#dc2626; --no-weak:#fee2e2; --no-bd:#fca5a5;
+    --cmt:#0891b2; --cmt-weak:#cffafe;
+    --shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink);
+    background:linear-gradient(135deg,var(--bg1),var(--bg2)) fixed;
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:0 20px 120px}
+
+  /* toolbar */
+  .bar{
+    position:sticky; top:0; z-index:10;
+    background:rgba(255,255,255,.78); backdrop-filter:blur(10px);
+    border:1px solid var(--line); border-radius:0 0 14px 14px; box-shadow:var(--shadow);
+    display:flex; align-items:center; gap:14px; padding:12px 16px; margin-bottom:8px; flex-wrap:wrap;
+  }
+  .bar .title{font-size:15px; font-weight:800; margin-right:auto; color:var(--accent)}
+  .bar .title small{display:block; font-weight:400; color:var(--muted); font-size:12px}
+  .progress{font-size:13px; color:var(--muted); white-space:nowrap; display:flex; gap:10px}
+  .progress .p-ok{color:var(--ok); font-weight:700}
+  .progress .p-no{color:var(--no); font-weight:700}
+  .progress .p-cm{color:var(--cmt); font-weight:700}
+  button{
+    font:inherit; font-size:13px; font-weight:600; cursor:pointer;
+    border:1px solid var(--line); background:#fff; color:var(--ink);
+    padding:7px 13px; border-radius:9px; transition:.12s;
+  }
+  button:hover{border-color:var(--accent); color:var(--accent)}
+  button.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  button.primary:hover{filter:brightness(1.1); color:#fff}
+  button.ghost{color:var(--muted)}
+
+  h1.doc{font-size:26px; margin:26px 0 4px; color:var(--ink); letter-spacing:-.02em}
+  .doc-sub{color:var(--muted); margin:0 0 26px; font-size:13px}
+
+  /* review items */
+  .ritem{
+    background:var(--card); border:1px solid var(--line); border-left:5px solid var(--accent-weak);
+    border-radius:14px; padding:18px 22px; margin:16px 0; box-shadow:var(--shadow);
+    scroll-margin-top:74px; transition:border-color .15s, box-shadow .15s, transform .1s;
+  }
+  .ritem:hover{transform:translateY(-1px)}
+  .ritem.has-comment{border-left-color:var(--cmt)}
+  .ritem.status-approved{border-left-color:var(--ok)}
+  .ritem.status-rejected{border-left-color:var(--no)}
+  .ritem__title{font-size:16px; font-weight:800; margin:0 0 10px; display:flex; align-items:center; gap:8px; letter-spacing:-.01em}
+  .ritem__title .tag{font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-weak); padding:2px 9px; border-radius:20px}
+  .ritem__body{color:var(--ink)}
+  .ritem__body p{margin:.4em 0}
+  .ritem__body pre{background:#f8fafc; border:1px solid var(--line); border-left:3px solid var(--accent-weak); border-radius:8px; padding:12px 14px; overflow:auto; font-size:13px; line-height:1.5; color:#334155}
+  .ritem__body code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.92em; background:#f1f5f9; padding:1px 5px; border-radius:5px}
+  .ritem__body pre code{background:none; padding:0}
+  .ritem__body ul,.ritem__body ol{margin:.4em 0; padding-left:1.4em}
+  .ritem__body table{border-collapse:collapse; font-size:13px}
+  .ritem__body td,.ritem__body th{border:1px solid var(--line); padding:4px 8px}
+
+  /* comment + verdict */
+  .cmt{margin-top:14px; padding-top:14px; border-top:1px dashed var(--line)}
+  .cmt__head{display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap}
+  .verdict{display:flex; gap:6px}
+  .sb{
+    font-size:12px; font-weight:700; padding:5px 12px; border-radius:20px;
+    border:1.5px solid var(--line); background:#fff; color:var(--muted);
+  }
+  .sb:hover{transform:none}
+  .sb--ok:hover{border-color:var(--ok-bd); color:var(--ok); background:var(--ok-weak)}
+  .sb--no:hover{border-color:var(--no-bd); color:var(--no); background:var(--no-weak)}
+  .status-approved .sb--ok{background:var(--ok); color:#fff; border-color:var(--ok)}
+  .status-rejected .sb--no{background:var(--no); color:#fff; border-color:var(--no)}
+  .cmt__label{font-size:12px; font-weight:600; color:var(--muted); margin-left:auto}
+  textarea{
+    width:100%; min-height:38px; resize:none; overflow:hidden;
+    font:inherit; font-size:14px; color:var(--ink); background:#f8fafc;
+    border:1px solid var(--line); border-radius:9px; padding:9px 11px;
+  }
+  textarea:focus{outline:none; border-color:var(--accent); background:#fff; box-shadow:0 0 0 3px var(--accent-weak)}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:11px 20px; border-radius:11px; box-shadow:var(--shadow);
+    font-size:13px; font-weight:600; opacity:0; pointer-events:none; transition:.25s;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body data-doc-id="{{DOC_ID}}" data-doc-title="{{DOC_TITLE}}" data-lang="{{LANG}}">
+<div class="wrap">
+
+  <div class="bar">
+    <div class="title">{{DOC_TITLE}}<small id="barSub"></small></div>
+    <div class="progress">
+      <span class="p-ok">✓ <b id="cOk">0</b></span>
+      <span class="p-no">✗ <b id="cNo">0</b></span>
+      <span class="p-cm">💬 <b id="cCm">0</b></span>
+      <span>/ <span id="total">0</span></span>
+    </div>
+    <button class="primary" id="copyBtn"></button>
+    <button class="ghost" id="clearBtn"></button>
+  </div>
+
+  <h1 class="doc">{{DOC_TITLE}}</h1>
+  <p class="doc-sub">{{GENERATED}}</p>
+
+  {{ITEMS}}
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var I18N = {
+    ko: {
+      sub:"검토 · 승인/거절·코멘트 자동 저장", copy:"📋 결과 전체 복사", clear:"초기화",
+      approve:"✓ 승인", reject:"✗ 거절", cmtLabel:"코멘트 (선택)", cmtPlaceholder:"이 항목에 대한 코멘트…",
+      exportTitle:"검토 결과 — ", bOk:" — ✅ 승인", bNo:" — ❌ 거절", bCm:" — 💬 코멘트",
+      empty:"_(승인/거절·코멘트 없음)_", copied:"검토 결과 복사됨 ✓", copyFail:"복사 실패 — 수동 복사",
+      confirmClear:"모든 승인/거절·코멘트를 삭제할까요?", cleared:"초기화됨"
+    },
+    en: {
+      sub:"review · verdicts & comments autosaved", copy:"📋 Copy results", clear:"Reset",
+      approve:"✓ Approve", reject:"✗ Reject", cmtLabel:"Comment (optional)", cmtPlaceholder:"Comment on this item…",
+      exportTitle:"Review results — ", bOk:" — ✅ Approved", bNo:" — ❌ Rejected", bCm:" — 💬 Comment",
+      empty:"_(no verdicts or comments)_", copied:"Results copied ✓", copyFail:"Copy failed — copy manually",
+      confirmClear:"Clear all verdicts and comments?", cleared:"Cleared"
+    }
+  };
+  var T = I18N[document.body.dataset.lang] || I18N.en;
+
+  var DOC_ID = document.body.dataset.docId || "doc";
+  var DOC_TITLE = document.body.dataset.docTitle || document.title;
+
+  document.getElementById("barSub").textContent = T.sub;
+  document.getElementById("copyBtn").textContent = T.copy;
+  document.getElementById("clearBtn").textContent = T.clear;
+  var Kc = function(id){ return "reviewdoc:" + DOC_ID + ":" + id; };
+  var Ks = function(id){ return "reviewdoc:" + DOC_ID + ":" + id + ":status"; };
+  var items = Array.prototype.slice.call(document.querySelectorAll(".ritem"));
+  var cOk=document.getElementById("cOk"), cNo=document.getElementById("cNo"), cCm=document.getElementById("cCm");
+  document.getElementById("total").textContent = items.length;
+
+  function autosize(ta){ ta.style.height="auto"; ta.style.height=(ta.scrollHeight)+"px"; }
+  function refresh(){
+    var ok=0,no=0,cm=0;
+    items.forEach(function(s){
+      if(s.classList.contains("status-approved")) ok++;
+      if(s.classList.contains("status-rejected")) no++;
+      if(s.classList.contains("has-comment")) cm++;
+    });
+    cOk.textContent=ok; cNo.textContent=no; cCm.textContent=cm;
+  }
+
+  items.forEach(function(sec, i){
+    var id = sec.id || ("item-"+(i+1)); sec.id = id;
+    var titleEl = sec.querySelector(".ritem__title");
+    var title = sec.dataset.title || (titleEl ? titleEl.textContent.trim() : id);
+    sec.dataset.title = title;
+
+    var box = document.createElement("div");
+    box.className = "cmt";
+    box.innerHTML =
+      '<div class="cmt__head">'+
+        '<div class="verdict">'+
+          '<button class="sb sb--ok" data-act="approve"></button>'+
+          '<button class="sb sb--no" data-act="reject"></button>'+
+        '</div>'+
+        '<span class="cmt__label"></span>'+
+      '</div>';
+    box.querySelector(".sb--ok").textContent = T.approve;
+    box.querySelector(".sb--no").textContent = T.reject;
+    box.querySelector(".cmt__label").textContent = T.cmtLabel;
+    var ta = document.createElement("textarea");
+    ta.placeholder = T.cmtPlaceholder;
+    box.appendChild(ta);
+    sec.appendChild(box);
+
+    // restore
+    var savedC = localStorage.getItem(Kc(id)) || "";
+    ta.value = savedC;
+    if(savedC.trim()) sec.classList.add("has-comment");
+    var savedS = localStorage.getItem(Ks(id));
+    if(savedS==="approve") sec.classList.add("status-approved");
+    if(savedS==="reject") sec.classList.add("status-rejected");
+
+    // comment input
+    ta.addEventListener("input", function(){
+      var v=ta.value;
+      if(v.trim()){ localStorage.setItem(Kc(id),v); sec.classList.add("has-comment"); }
+      else{ localStorage.removeItem(Kc(id)); sec.classList.remove("has-comment"); }
+      autosize(ta); refresh();
+    });
+    autosize(ta);
+
+    // verdict toggle
+    box.querySelectorAll(".sb").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var act = btn.dataset.act;
+        var cur = sec.classList.contains("status-"+(act==="approve"?"approved":"rejected"));
+        sec.classList.remove("status-approved","status-rejected");
+        if(cur){ localStorage.removeItem(Ks(id)); }
+        else{
+          sec.classList.add(act==="approve"?"status-approved":"status-rejected");
+          localStorage.setItem(Ks(id), act);
+        }
+        refresh();
+      });
+    });
+  });
+  refresh();
+
+  function toast(msg){
+    var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove("show"); },1800);
+  }
+
+  function buildExport(){
+    var L=[];
+    L.push("# " + T.exportTitle + DOC_TITLE);
+    L.push("");
+    var any=false;
+    items.forEach(function(sec, i){
+      var st = localStorage.getItem(Ks(sec.id));
+      var c = (localStorage.getItem(Kc(sec.id))||"").trim();
+      if(!st && !c) return;
+      any=true;
+      var badge = st==="approve" ? T.bOk : st==="reject" ? T.bNo : T.bCm;
+      L.push("## [" + (i+1) + "] " + sec.dataset.title + "  (#" + sec.id + ")" + badge);
+      if(c) L.push(c);
+      L.push("");
+    });
+    if(!any) L.push(T.empty);
+    return L.join("\n").trim()+"\n";
+  }
+
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var text=buildExport();
+    function done(){ toast(T.copied); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, fb);
+    } else fb();
+    function fb(){
+      var ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){ toast(T.copyFail); }
+      document.body.removeChild(ta);
+    }
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    if(!confirm(T.confirmClear)) return;
+    items.forEach(function(sec){
+      localStorage.removeItem(Kc(sec.id)); localStorage.removeItem(Ks(sec.id));
+      sec.classList.remove("has-comment","status-approved","status-rejected");
+      var ta=sec.querySelector("textarea"); if(ta){ ta.value=""; ta.style.height="auto"; }
+    });
+    refresh(); toast(T.cleared);
+  });
+})();
+</script>
+</body>
+</html>

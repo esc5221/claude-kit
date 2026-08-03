@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "schematic",
+  "displayName": "schematic",
+  "version": "1.0.0",
+  "description": "Bold-Outline Flat single-file HTML schematics for systems, architecture, and strategy.",
+  "author": { "name": "esc5221", "url": "https://github.com/esc5221" },
+  "repository": "https://github.com/esc5221/claude-kit",
+  "license": "MIT",
+  "keywords": ["diagram", "architecture", "schematic", "svg", "flowchart"],
+  "skills": ["./"]
+}

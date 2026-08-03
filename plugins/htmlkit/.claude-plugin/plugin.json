@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "htmlkit",
+  "displayName": "htmlkit",
+  "version": "1.0.0",
+  "description": "Single-file HTML decks, reports, and ADRs composed from format x look.",
+  "author": { "name": "esc5221", "url": "https://github.com/esc5221" },
+  "repository": "https://github.com/esc5221/claude-kit",
+  "license": "MIT",
+  "keywords": ["html", "slides", "deck", "report", "adr", "presentation"],
+  "skills": ["./"]
+}

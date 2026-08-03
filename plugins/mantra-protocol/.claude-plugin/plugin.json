@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "mantra-protocol",
+  "displayName": "MANTRA Protocol",
+  "version": "1.0.0",
+  "description": "Self-enforcing prompt protocol for specification-adherent agents.",
+  "author": { "name": "esc5221", "url": "https://github.com/esc5221" },
+  "repository": "https://github.com/esc5221/claude-kit",
+  "license": "MIT",
+  "keywords": ["prompt", "protocol", "specification", "drift", "mantra"],
+  "skills": ["./"]
+}
