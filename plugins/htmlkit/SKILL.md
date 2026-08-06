@@ -26,6 +26,7 @@ HTML 산출물을 만드는 **슈퍼셋 스킬**. 발표 덱이든 스크롤 리
   "리포트인데 모던하게"     → format=report, look=light-modern (= brief)
   "ADR을 논문체로"         → format=adr,    look=mono
   "리포트를 차분한 종이톤"  → format=report, look=paper
+  "야전 노트/종이 스탬프 느낌으로" · 게임/프로토타입 계획서 → look=fieldnote
 ```
 
 format × look은 직교한다. 어떤 칸이든 `formats/<format>.html` + `looks/<look>.md` 조합으로 만든다.
@@ -79,4 +80,4 @@ schematic     시스템 도식·아키텍처·전략 프레이밍 그림 (bold-o
 
 - **새 look 추가**(예: dark): `looks/dark.md`에 변수 계약 전부를 채운다. blocks/formats 수정 불필요.
 - **새 format 추가**(예: poster): `formats/poster.html` shell + `blocks/poster-blocks.md`. 기존 look 그대로 적용됨.
-- **변수 계약 확장**: 새 토큰은 모든 look(light-modern·mono·paper)에 동시에 추가(한쪽만 추가하면 그 look에서 깨짐).
+- **변수 계약 확장**: 새 토큰은 모든 look(light-modern·mono·paper·fieldnote)에 동시에 추가(한쪽만 추가하면 그 look에서 깨짐).
