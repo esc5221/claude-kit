@@ -10,6 +10,11 @@ mantra-protocol  자기강제 프롬프트 프로토콜.                        
                  매 응답 첫 줄에 복창해 스펙 드리프트를 막는다.
                  원문 프롬프트: plugins/mantra-protocol/prompts/
 
+relay-ko         한국어 산문을 백지에서 쓰지 않는다.                   (프롬프트)
+                 일본어·터키어로 먼저 쓴 뒤 그것을 번역해 한국어를 만든다.
+                 자유도를 뺏어 AI 문체 회귀를 막는다.
+                 번역 규칙: plugins/relay-ko/references/rules.md
+
 review-doc       아무 내용이나 항목별 승인/거절 + 코멘트가 달리는       단일 HTML
                  검토 문서로. localStorage 자동 저장, 결과 마크다운 복사.
                  한국어·영어 UI.

@@ -22,6 +22,20 @@
       ]
     },
     {
+      "name": "relay-ko",
+      "source": "./plugins/relay-ko",
+      "description": "Write Korean prose by relay — draft in Japanese and Turkish first, then translate — so blank-page generation cannot fall back to AI-flavored Korean.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "korean",
+        "writing",
+        "translation",
+        "relay",
+        "style"
+      ]
+    },
+    {
       "name": "review-doc",
       "source": "./plugins/review-doc",
       "description": "Turn any content into a single self-contained HTML review file with per-item approve/reject toggles and comment boxes. Autosaves to localStorage, copies verdicts as Markdown.",

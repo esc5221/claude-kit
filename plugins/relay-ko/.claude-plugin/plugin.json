@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "relay-ko",
+  "displayName": "Relay KO",
+  "version": "1.0.0",
+  "description": "Write Korean prose by relay — draft in Japanese and Turkish first, then translate — so blank-page generation cannot fall back to AI-flavored Korean.",
+  "author": { "name": "esc5221", "url": "https://github.com/esc5221" },
+  "repository": "https://github.com/esc5221/claude-kit",
+  "license": "MIT",
+  "keywords": ["korean", "writing", "translation", "relay", "style"],
+  "skills": ["./"]
+}
