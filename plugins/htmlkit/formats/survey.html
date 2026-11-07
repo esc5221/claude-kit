@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}}</title>
+<!-- {{FONT_LINKS}} : looks/<look>.md 폰트 링크 (press/paper/mono look은 비움) -->
+{{FONT_LINKS}}
+<style>
+/* ===== LOOK TOKENS : looks/<look>.md 의 :root 블록 주입 ===== */
+{{LOOK_VARS}}
+
+/* ===== survey format : 항목이 수십 개인 카탈로그 문서 (look 비종속, 변수만 참조) =====
+   report 와 다른 점 — h3 가 문단 소제목이 아니라 "항목 그 자체"라서 본문보다 크다.
+   adr 과 다른 점   — 흰 카드에 담지 않고 지면을 넓게 쓴다. 결정 하나가 아니라 목록이다. */
+*{box-sizing:border-box}
+body{ margin:0; background:var(--bg); color:var(--ink);
+      font-family:var(--font-body); font-weight:var(--weight-base,400);
+      font-size:15px; line-height:1.65; }
+.wrap{ max-width:1080px; margin:0 auto; padding:48px 32px 120px; }
+@media(max-width:720px){ .wrap{ padding:32px 20px 80px; } }
+
+/* masthead */
+h1{ font-size:30px; font-weight:var(--weight-strong); letter-spacing:-.02em; margin:0 0 6px; line-height:1.2; }
+.sub{ color:var(--ink-faint); font-size:14px; margin-bottom:40px; font-family:var(--font-mono); }
+
+/* 섹션 — 검정 굵은 괘선으로 계보를 끊는다 */
+h2{ font-size:20px; font-weight:var(--weight-strong); letter-spacing:-.01em;
+    margin:56px 0 4px; padding-top:20px; border-top:2px solid var(--ink); }
+h2 .n{ color:var(--ink-faint); font-weight:400; margin-right:10px;
+       font-variant-numeric:tabular-nums; font-family:var(--font-mono); }
+.lede{ color:var(--ink-faint); font-size:14px; margin:0 0 24px; }
+
+/* 항목 — 본문보다 크다. 이게 이 format 의 정체다 */
+h3{ font-size:16px; font-weight:var(--weight-strong); letter-spacing:-.01em; margin:32px 0 6px; }
+h3 .id{ color:var(--ink-faint); font-weight:400; margin-right:8px;
+        font-variant-numeric:tabular-nums; font-family:var(--font-mono); }
+
+/* 본문은 검정. 회색 본문은 이 format 에서 쓰지 않는다 */
+p{ margin:10px 0; }
+strong{ font-weight:var(--weight-strong); }
+em{ font-style:italic; }
+code{ font-family:var(--font-mono); font-size:.9em; background:var(--code-bg);
+      color:var(--code-ink); padding:1px 5px; border-radius:var(--radius-sm); }
+
+/* 실측표 — 액센트 바 없이 균일하게. 문서당 수십 개가 반복된다 */
+pre{ font-family:var(--font-mono); font-size:12.5px; line-height:1.55;
+     background:var(--code-bg); border:1px solid var(--line); border-radius:var(--radius);
+     padding:14px 16px; margin:12px 0; overflow-x:auto; white-space:pre; }
+pre code{ background:none; padding:0; font-size:inherit; color:inherit; }
+pre b{ font-weight:700; }
+pre .c{ color:var(--ink-faint); }
+pre .g{ color:var(--good); font-weight:600; }
+pre .a{ color:var(--warn); font-weight:600; }
+pre .r{ color:var(--bad); font-weight:600; }
+
+/* 상태 뱃지 — 항목마다 반복되므로 알약. h3 baseline 에 맞춰 내린다 */
+.tag{ display:inline-block; font-size:11px; font-weight:600; letter-spacing:.02em;
+      padding:2px 8px; border-radius:100px; margin-left:6px; vertical-align:2px;
+      background:var(--accent-soft); color:var(--accent); }
+.tag.good{ background:var(--good-soft); color:var(--good); }
+.tag.bad{  background:var(--bad-soft);  color:var(--bad); }
+.tag.warn{ background:var(--warn-soft); color:var(--warn); }
+.tag.info{ background:var(--info-soft); color:var(--info); }
+
+/* 전환점 — 문서에 한두 번 쓰는 큰 콜아웃. 라벨 없이 왼쪽만 각지게 */
+.pivot{ border-left:3px solid var(--accent); background:var(--accent-soft);
+        border-radius:0 var(--radius) var(--radius) 0; padding:16px 20px; margin:28px 0; }
+.pivot b{ color:var(--accent); }
+.pivot.good{ border-left-color:var(--good); background:var(--good-soft); }
+.pivot.good b{ color:var(--good); }
+.pivot.bad{ border-left-color:var(--bad); background:var(--bad-soft); }
+.pivot.bad b{ color:var(--bad); }
+
+/* 표 */
+table{ width:100%; border-collapse:collapse; margin:14px 0; font-size:13.5px; }
+th,td{ text-align:left; padding:8px 11px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+th{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-faint); font-weight:700; border-bottom:1.5px solid var(--line); }
+.chosen td{ background:var(--good-soft); }
+
+/* 리스트 · 출처 */
+ul{ margin:8px 0; padding-left:20px; } li{ margin:4px 0; }
+.src{ color:var(--ink-faint); font-size:12.5px; margin-top:8px; font-family:var(--font-mono); }
+footer{ margin-top:44px; padding-top:14px; border-top:2px solid var(--ink);
+        font-size:12px; color:var(--ink-faint); font-family:var(--font-mono); line-height:1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+{{BODY}}
+
+</div>
+</body>
+</html>
